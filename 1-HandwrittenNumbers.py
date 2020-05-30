@@ -1,3 +1,4 @@
+# coding=utf-8
 import cv2
 import numpy as np
 import tensorflow as tf
@@ -73,3 +74,23 @@ model.fit(X_train, y_train, epochs=3)
 val_loss, val_acc = model.evaluate(X_test, y_test)
 print(val_loss)
 print(val_acc)
+
+# Model abspeichern
+model.save('ziffern.model')
+
+# Model laden
+model = tf.keras.models.load_model('ziffern.model')
+
+
+# Eigene Ziffern Klassifizieren
+#  Slicing am Ende um nur eine Spalte zu bekommen damit das Format passt
+bild = cv2.imread('ziffer.png')[:,:,0]
+#  Um das Netz nicht zu verwirren muß  das Bild noch invertiert werden
+bild = np.invert(np.array([bild]))
+
+vorhersage = model.predict(bild)
+
+print(vorhersage)
+print("Vorhersage: {}".format(np.argmax(vorhersage)))
+plt.imshow(bild[0])
+plt.show()
